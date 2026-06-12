@@ -1,0 +1,5 @@
+def user_role(request):
+    if request.user.is_authenticated:
+        prof = getattr(request.user, "profile", None)
+        return {"is_admin_user": bool(prof and prof.is_admin)}
+    return {"is_admin_user": False}
