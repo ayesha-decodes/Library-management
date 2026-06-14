@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block title %}Login{% endblock %}
+{% block auth %}
+<div class="auth-card">
+  <h3 class="mb-3"><i class="bi bi-book-half text-primary"></i> LibraryMS</h3>
+  <h5 class="mb-3">Sign in</h5>
+  <form method="post">{% csrf_token %}
+    {% for f in form %}
+      <div class="mb-3"><label class="form-label">{{ f.label }}</label>{{ f }}{% if f.errors %}<div class="text-danger small">{{ f.errors|join:", " }}</div>{% endif %}</div>
+    {% endfor %}
+    <button class="btn btn-primary w-100">Login</button>
+  </form>
+  <div class="d-flex justify-content-between mt-3 small">
+    <a href="{% url 'accounts:password_reset' %}">Forgot password?</a>
+    <a href="{% url 'accounts:register' %}">Create account</a>
+  </div>
+</div>
+{% endblock %}

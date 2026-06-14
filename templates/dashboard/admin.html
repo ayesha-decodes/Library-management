@@ -1,0 +1,61 @@
+{% extends "base.html" %}{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h3 class="mb-3">Admin Dashboard</h3>
+<div class="row g-3 mb-4">
+  {% for label,val,icon,color in cards %}{% endfor %}
+  <div class="col-sm-6 col-lg-3"><div class="stat-card"><div class="icon bg-primary-subtle text-primary"><i class="bi bi-journal-bookmark"></i></div><div><div class="stat-num">{{ total_books }}</div><div class="stat-label">Total Books</div></div></div></div>
+  <div class="col-sm-6 col-lg-3"><div class="stat-card"><div class="icon bg-info-subtle text-info"><i class="bi bi-people"></i></div><div><div class="stat-num">{{ total_users }}</div><div class="stat-label">Total Users</div></div></div></div>
+  <div class="col-sm-6 col-lg-3"><div class="stat-card"><div class="icon bg-success-subtle text-success"><i class="bi bi-arrow-up-right-circle"></i></div><div><div class="stat-num">{{ issued }}</div><div class="stat-label">Books Issued</div></div></div></div>
+  <div class="col-sm-6 col-lg-3"><div class="stat-card"><div class="icon bg-warning-subtle text-warning"><i class="bi bi-arrow-down-left-circle"></i></div><div><div class="stat-num">{{ returned }}</div><div class="stat-label">Books Returned</div></div></div></div>
+  <div class="col-sm-6 col-lg-3"><div class="stat-card"><div class="icon bg-danger-subtle text-danger"><i class="bi bi-exclamation-octagon"></i></div><div><div class="stat-num">{{ overdue }}</div><div class="stat-label">Overdue</div></div></div></div>
+  <div class="col-sm-6 col-lg-3"><div class="stat-card"><div class="icon bg-secondary-subtle text-secondary"><i class="bi bi-hourglass-split"></i></div><div><div class="stat-num">{{ pending }}</div><div class="stat-label">Pending Requests</div></div></div></div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-7"><div class="card"><div class="card-body"><h6>Monthly Borrow Statistics</h6><canvas id="monthlyChart" height="120"></canvas></div></div></div>
+  <div class="col-lg-5"><div class="card"><div class="card-body"><h6>Category Distribution</h6><canvas id="catChart" height="120"></canvas></div></div></div>
+</div>
+
+<div class="card mt-3"><div class="card-body">
+<h6>Recent Activity</h6>
+<table class="table table-sm align-middle mb-0"><thead><tr><th>User</th><th>Book</th><th>Status</th><th>Date</th></tr></thead><tbody>
+{% for r in recent %}<tr><td>{{ r.user.username }}</td><td>{{ r.book.title }}</td><td>{{ r.get_status_display }}</td><td>{{ r.created_at|date:"Y-m-d H:i" }}</td></tr>{% endfor %}
+</tbody></table></div></div>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+if (document.getElementById('monthlyChart')) {
+  new Chart(document.getElementById('monthlyChart'), {
+    type: 'line',
+    data: {
+      labels: {{ months|safe }},
+      datasets: [{
+        label: 'Borrows',
+        data: {{ counts|safe }},
+        borderColor: '#4F46E5',
+        backgroundColor: 'rgba(79,70,229,.15)',
+        tension: 0.3,
+        fill: true
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+if (document.getElementById('catChart')) {
+  new Chart(document.getElementById('catChart'), {
+    type: 'doughnut',
+    data: {
+      labels: {{ cat_labels|safe }},
+      datasets: [{
+        data: {{ cat_values|safe }},
+        backgroundColor: ['#4F46E5', '#6366F1', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#06B6D4', '#EF4444']
+      }]
+    }
+  });
+}
+</script>
+{% endblock %}

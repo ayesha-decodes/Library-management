@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block title %}Users{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3"><h3>Users</h3>
+<form class="d-flex gap-2"><input class="form-control form-control-sm" name="q" placeholder="Search…" value="{{ request.GET.q }}"><button class="btn btn-sm btn-primary">Search</button></form></div>
+<div class="card"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
+<thead><tr><th>Username</th><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th></th></tr></thead><tbody>
+{% for u in users %}<tr>
+<td>{{ u.username }}</td><td>{{ u.profile.name }}</td><td>{{ u.email }}</td>
+<td><span class="badge text-bg-{% if u.profile.role == 'admin' %}primary{% else %}secondary{% endif %}">{{ u.profile.role }}</span></td>
+<td>{{ u.date_joined|date:"Y-m-d" }}</td>
+<td><a href="{% url 'accounts:user_delete' u.pk %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete user?')"><i class="bi bi-trash"></i></a></td>
+</tr>{% empty %}<tr><td colspan="6" class="text-center text-muted py-4">No users</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% include "_pagination.html" %}
+{% endblock %}

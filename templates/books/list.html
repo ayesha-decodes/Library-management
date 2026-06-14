@@ -1,0 +1,33 @@
+{% extends "base.html" %}{% block title %}Books{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
+  <h3 class="m-0">Books</h3>
+  {% if is_admin_user %}<a href="{% url 'books:add' %}" class="btn btn-primary"><i class="bi bi-plus"></i> Add Book</a>{% endif %}
+</div>
+<form class="row g-2 mb-3">
+  <div class="col-md-6"><input class="form-control" name="q" placeholder="Search title, author, ISBN…" value="{{ q }}"></div>
+  <div class="col-md-4"><select class="form-select" name="category"><option value="">All categories</option>
+    {% for c in categories %}<option value="{{ c.pk }}" {% if selected_cat == c.pk|stringformat:'s' %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+  </select></div>
+  <div class="col-md-2"><button class="btn btn-primary w-100">Filter</button></div>
+</form>
+<div class="row g-3">
+  {% for b in books %}
+  <div class="col-sm-6 col-md-4 col-lg-3">
+    <div class="card book-card h-100">
+      <div class="book-cover">{% if b.cover_image %}<img src="{{ b.cover_image.url }}" alt="">{% else %}<div class="cover-fallback"><i class="bi bi-book"></i></div>{% endif %}</div>
+      <div class="card-body">
+        <h6 class="card-title text-truncate" title="{{ b.title }}">{{ b.title }}</h6>
+        <p class="text-muted small mb-1">{{ b.author }}</p>
+        <span class="badge text-bg-light">{{ b.category.name|default:"—" }}</span>
+        <span class="badge {% if b.available_quantity %}text-bg-success{% else %}text-bg-danger{% endif %}">{{ b.available_quantity }}/{{ b.quantity }}</span>
+      </div>
+      <div class="card-footer bg-transparent border-0 d-flex gap-2">
+        <a href="{% url 'books:detail' b.pk %}" class="btn btn-sm btn-outline-primary w-100">View</a>
+      </div>
+    </div>
+  </div>
+  {% empty %}<p class="text-muted">No books found.</p>{% endfor %}
+</div>
+{% include "_pagination.html" %}
+{% endblock %}

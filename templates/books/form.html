@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}Book form{% endblock %}
+{% block content %}
+<h3>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Book</h3>
+<div class="card"><div class="card-body">
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+<div class="row g-3">
+{% for f in form %}<div class="col-md-6"><label class="form-label">{{ f.label }}</label>{{ f }}{% if f.errors %}<div class="text-danger small">{{ f.errors|join:", " }}</div>{% endif %}</div>{% endfor %}
+</div>
+<button class="btn btn-primary mt-3">Save</button>
+<a href="{% url 'books:list' %}" class="btn btn-link">Cancel</a>
+</form></div></div>
+{% endblock %}
