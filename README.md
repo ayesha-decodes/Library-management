@@ -23,9 +23,6 @@ python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
 ```
-
-Visit http://127.0.0.1:8000/
-
 The superuser is automatically given the `admin` role on first login (see `accounts/signals.py`).
 Regular sign-ups via `/accounts/register/` get the `student` role.
 
